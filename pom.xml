@@ -31,7 +31,7 @@
 
 
     <build>
-        <finalName>demo-api</finalName>
+        <finalName>demo-websocket</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
