@@ -13,9 +13,13 @@
 package com.bl.pemweb.api.utils;
 
 import com.bl.pemweb.api.model.Classroom;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,10 +34,13 @@ public class Scheduler {
 
     private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private ObjectMapper mapper;
+    @Autowired
+    private SimpMessagingTemplate message;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Scheduled(fixedRate = 5000)
-    private void generateData(){
+    private Classroom generateData() throws JsonProcessingException {
         double max = 32.0;
         double min = 28.5;
 
@@ -50,6 +57,10 @@ public class Scheduler {
         classroom.setPressure(pressure);
 
         log.info("classrom : "+classroom.toString());
+
+        message.convertAndSend("/topic/classroom",classroom);
+
+        return classroom;
 
     }
 }
